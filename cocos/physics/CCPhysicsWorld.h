@@ -1,5 +1,6 @@
 /****************************************************************************
- Copyright (c) 2013 Chukong Technologies Inc.
+ Copyright (c) 2013-2016 Chukong Technologies Inc.
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
  
  http://www.cocos2d-x.org
  
@@ -56,11 +57,11 @@ typedef struct PhysicsRayCastInfo
 {
     PhysicsShape* shape;
     Vec2 start;
-    Vec2 end;              //< in lua, it's name is "ended"
+    Vec2 end;              ///< in lua, it's name is "ended"
     Vec2 contact;
     Vec2 normal;
 
-    // FIXME: correct thing to do is use `cpFlaot` instead of float.
+    // FIXME: correct thing to do is use `cpFloat` instead of float.
     // but in order to do so, we should include "chipmunk_types.h"
     // in Chipmunk v7.0, chipmunk_types includes all the mac types that
     // conflicts with cocos2d Size, Point,... etc types. And all the CocosStudio

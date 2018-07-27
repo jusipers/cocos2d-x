@@ -2,92 +2,79 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [v3.14](#v314)
-  - [新特性](#%E6%96%B0%E7%89%B9%E6%80%A7)
-  - [特性详细介绍](#%E7%89%B9%E6%80%A7%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D)
-    - [所有平台使用luajit 2.10-beta2](#%E6%89%80%E6%9C%89%E5%B9%B3%E5%8F%B0%E4%BD%BF%E7%94%A8luajit-210-beta2)
-    - [Sprite支持九宫格特性](#sprite%E6%94%AF%E6%8C%81%E4%B9%9D%E5%AE%AB%E6%A0%BC%E7%89%B9%E6%80%A7)
-    - [支持Spine二进制格式](#%E6%94%AF%E6%8C%81spine%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%A0%BC%E5%BC%8F)
-    - [新增加动作类](#%E6%96%B0%E5%A2%9E%E5%8A%A0%E5%8A%A8%E4%BD%9C%E7%B1%BB)
-  - [已知问题](#%E5%B7%B2%E7%9F%A5%E9%97%AE%E9%A2%98)
-  - [其他](#%E5%85%B6%E4%BB%96)
+- [Cocos2d-x 3.17 Release Notes](#cocos2d-x-317-release-notes)
+  - [测试环境](#%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83)
+  - [版本特性](#%E7%89%88%E6%9C%AC%E7%89%B9%E6%80%A7)
+  - [详细介绍](#%E8%AF%A6%E7%BB%86%E4%BB%8B%E7%BB%8D)
+    - [支持 iPhone X](#%E6%94%AF%E6%8C%81-iphone-x)
+    - [支持 Android Studio 3.0+](#%E6%94%AF%E6%8C%81-android-studio-30)
+    - [CMake 支持全平台](#cmake-%E6%94%AF%E6%8C%81%E5%85%A8%E5%B9%B3%E5%8F%B0)
+    - [升级第三方库](#%E5%8D%87%E7%BA%A7%E7%AC%AC%E4%B8%89%E6%96%B9%E5%BA%93)
+    - [移除过时的内容](#%E7%A7%BB%E9%99%A4%E8%BF%87%E6%97%B6%E7%9A%84%E5%86%85%E5%AE%B9)
+    - [Bugs 修复，提高稳定性](#bugs-%E4%BF%AE%E5%A4%8D%E6%8F%90%E9%AB%98%E7%A8%B3%E5%AE%9A%E6%80%A7)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# v3.14
+# Cocos2d-x 3.17 Release Notes #
 
-## 新特性
+Cocos2d-x 3.17 版本着重于工具链的更新，和稳定性的增强。
 
-* 支持Spine二进制格式
-* 所有平台使用luajit 2.10-beta2
-* 新增动作类：`ResizeBy`和`ResizeTo`
-* Android模拟支持关闭多点触摸
-* Sprite支持九宫格特性
-* 动作类新增功能，可以根据tag查询某一节点正在运行的动作数量
-* Button类可以设置title内容
-* EditBox支持文本水平对齐
-* 支持Mac平台手柄
+## 测试环境
 
-## 特性详细介绍
+ Android 平台使用 Android Studio (3.0, 3.1, 3.1.1) 和 NDK r16 进行测试。
 
-### 所有平台使用luajit 2.10-beta2
+## 版本特性
 
-之前的luajit版本无法在PC上方便地编译出arm64的字节码，需要用真机（比如iPhone6真机)编译，因此在之前的版本，iOS 64位使用的是lua，iOS 32位使用的是luajit。
+- 支持 iPhone X
+- 支持 Android Studio 3.0+
+- CMake 支持全平台，支持预编译引擎库
+- 升级 Spine runtime 至 v3.6.39
+- 升级 GLFW 至 3.2.1，并提供预编译库
+- 更新 Box2D，并提供预编译库
+- 去除 Android 的 ant 工程
+- 去除 Visual Studio 2013 的支持
 
-luajit 2.10-beta2版本，可以方便地在PC平台编译出arm64位的字节码，因此我们在各平台都使用了luajit，这样能够提升性能。如果使用cocos命令编译、打包的话，那么cocos命令会自动编译出对应平台的字节码，如果有生成64位字节码的话，那么会把这些字节码放到`64-bit`目录下。当然你也可以通过`cocos luacompile`自己编译字节码，具体的使用方式可以参考`cocos luacompile -h`输出的帮助信息。
+## 详细介绍
 
-通过cocos命令编译、打包生成的字节码时各平台的情况如下：
+### 支持 iPhone X
 
-平台 | 生成32位字节码 | 生成64位字节码 |
----|---|---
-iOS | 是 | 是
-Android | 是，如果APP\_ABI的内容不是只包含64位架构(`APP_ABI := arm64-v8a`) | 是，如果APP\_ABI包含了64位架构，比如`APP_ABI := arm64-v8a ...`
-Mac | 否 | 是
-Windows | 是 | 否
-Linux | 否 |否
+3.17 带来对 iPhone X 的支持，包含支持全屏模式，支持自动隐藏 Home 指示器，改用 Storyboard 作为启动屏幕，和增加获取 Safe Area 的接口。在开发支持 iPhone X 的应用时，最需要了解清楚的就是 Safe Area：
 
-### Sprite支持九宫格特性
+<p align="center">
+  <img width="400" src="https://raw.githubusercontent.com/cocos2d/cocos2d-x-docs/master/en/installation/iOS-img/iPhoneXSafeArea.png">
+</p>
 
-Sprite现在支持九宫格特性了，使用方式如下
+开发者可以通过调用 `Director::getSafeAreaRect()` 来获取 Safe Area 区域。
 
-```c++
-auto sprite = Sprite::create(...);
-// set center rect
-// the origin is top-left
-sprite->setCenterRectNormalized(Rect(x, y, width, heigh));
-```
+### 支持 Android Studio 3.0+
 
-详细信息可以参考`Sprite::setCenterNormalized()`的注释。
+Android Studio 是 Google 官方唯一支持的 Android 开发 IDE。
 
-![sprite-slice](https://raw.githubusercontent.com/minggo/Pictures/master/sprite-slice.png)
+该版本增加了对 Android Studio 3.0+ 的支持。在支持的过程中，同时将 NDK 版本从 r14 升级到 r16。对 Gradle 工程配置也进行了诸多改进，包括简化 Gradle 变量 PROP_*，将依赖声明中弃用的 `compile` 改为新的 `implementation`，增加用以削减 Release 包体积的 Proguard 文件。
 
-### 支持Spine二进制格式
+### CMake 支持全平台
 
-使用方式没有改变，只是文件格式变成了二进制格式。这样的好处就是解析效率更高，文件更小。具体的使用方法如下：
+扩展 CMake 构建支持至全平台，包括 Android (NDK)、iOS、macOS、Linux、Windows（VC++ compiler）。支持将引擎部分进行预编译，并在新的构建过程中重用预编译的引擎库。通过使用预编译库，可以极大的缩短工程构建时间。
 
-```c++
-skeletonNode = SkeletonAnimation::createWithBinaryFile("spine/spineboy.skel", "spine/spineboy.atlas", 0.6f);
+详细的使用方法请参考 [CMake 文档](https://github.com/cocos2d/cocos2d-x/blob/v3/cmake/README.md)
 
-...
-```
+### 升级第三方库
 
-![spine-binary](https://raw.githubusercontent.com/minggo/Pictures/master/spine-binary.png)
+Spine 骨骼动画广泛用于 Cocos2d-x 开发的游戏，引擎跟进 Spine 的升级，升级 Runtime 至 3.6.39。
 
-### 新增加动作类
+升级 GLFW 至 3.2.1 以修复支持游戏手柄时存在的问题，同时提供 GLFW 预编译库。
 
-新增加两个动作类：`ResizeBy`和`ResizeTo`。和`ScaleBy`、`ScaleTo`不同的是，`ResizeBy`和`ResizeTo`改变的是节点的content size的大小。这种动作对于支持九宫格特性的节点的缩放效果比`ScaleBy`和`ScaleTo`好，因为`ScaleBy`和`ScaleTo`是对节点做整体缩放。效果对比如下：
+社区希望引擎升级 Box2D，可 Box2D 的新版本迟迟未发布，根据反馈 GitHub 提交 f655c603ba9d83 是稳定的，升级 Box2D 至该提交，同时提供 Box2D 的预编译库。
 
-![resize-action-effect](https://raw.githubusercontent.com/minggo/Pictures/master/resize-action-effect.png)
+每一次版本发布，都会附带特定版本的第三方预编译库，如果由于项目需要想对第三方库进行定制，请参考: [第三方库文档](https://github.com/cocos2d/cocos2d-x-3rd-party-libs-src/blob/v3/README.md)
 
-## 已知问题
+### 移除过时的内容
 
-如果使用Xcode 8.2，那么lua工程会在iOS模拟器上崩溃。通过调试发现崩溃在`lua_open`函数的调用上。如果使用Xcode 8.1或一下版本，那么没有问题。我们怀疑这是Xcode的bug，在v3.14无法解决。使用lua的开发者在位iOS平台开发时有两个选择：
+由于 Google 官方自 [Android SDK Tools 25.3.0](http://tools.android.com/recent/androidsdktoolsrevision2530feb2017) 就已放弃 ant 支持。移除旧有的 `proj.android` ant 工程，新的 `proj.android` 是 Android Studio 工程。[NDK r16](https://developer.android.com/ndk/guides/abis) 弃用了 armeabi，引擎调整默认的编译架构从 armeabi 为 armeabi-v7a。
 
-* 使用Xcode 8.1或者一下版本
-* 使用Xcode 8.2，在Mac或者iOS真机开发、调试
+在 win32 平台，越来越多的开发者已经使用 Visual Studio 2015/2017 进行开发，移除对年代久远的 2013 的支持。现存的工程配置适合于 2015 ，如果需要使用 2017，可打开现有的 sln 文件，调整配置，或使用 CMake。
 
-该问题的进展可以跟踪[这个issue](https://github.com/cocos2d/cocos2d-x/issues/17043)。
+### Bugs 修复，提高稳定性
 
-## 其他
+改版本包含 51 项 bugs 修复和 33 项小改进，不再列举，请参考 [Changelog](https://github.com/cocos2d/cocos2d-x/blob/v3/CHANGELOG)。
 
-[详细的改动内容](https://github.com/cocos2d/cocos2d-x/blob/v3/CHANGELOG)。
